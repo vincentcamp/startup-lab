@@ -5,8 +5,7 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { 
   Search, Filter, ArrowUpDown, TrendingUp, Clock, Hash, Calendar,
-  ChevronDown, ChevronUp, Star, Zap, ThumbsUp, X, Sliders, 
-  BarChart, ArrowLeft, LucideIcon
+  ChevronDown, Star, X, BarChart, ArrowLeft
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -32,17 +31,6 @@ import {
 } from "@/components/ui/sheet"
 
 // Animation variants
-const containerVariants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2
-    }
-  }
-}
-
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   show: { 
@@ -246,7 +234,6 @@ const browseBets = [
     reactions: 29,
     timePosted: "Last week"
   },
-  // Add more bets for browsing
 ]
 
 export default function ExplorePage() {
@@ -409,7 +396,10 @@ export default function ExplorePage() {
                         <div key={category.name} className="flex items-center">
                           <Checkbox 
                             id={`category-${category.name}`} 
-                            checked={selectedCategory === category.name || selectedCategory === "All Sports" && category.name === "All Sports"}
+                            checked={
+                              (selectedCategory === category.name) || 
+                              (selectedCategory === "All Sports" && category.name === "All Sports")
+                            }
                             onCheckedChange={() => setSelectedCategory(category.name)}
                           />
                           <label 
@@ -450,7 +440,9 @@ export default function ExplorePage() {
                           key={tag}
                           variant={selectedTags.includes(tag) ? "default" : "outline"}
                           className="cursor-pointer"
-                          onClick={() => selectedTags.includes(tag) ? removeTag(tag) : addTag(tag)}
+                          onClick={() => 
+                            selectedTags.includes(tag) ? removeTag(tag) : addTag(tag)
+                          }
                         >
                           {tag}
                         </Badge>
@@ -510,7 +502,7 @@ export default function ExplorePage() {
                   className={sortBy === "most-popular" ? "bg-blue-50 text-blue-600" : ""}
                   onClick={() => setSortBy("most-popular")}
                 >
-                  <ThumbsUp className="mr-2 h-4 w-4" /> Most Popular
+                  <Star className="mr-2 h-4 w-4" /> Most Popular
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -566,29 +558,29 @@ export default function ExplorePage() {
           className="mb-8"
           onValueChange={setSelectedTab}
         >
-        <TabsList className="mb-4 relative">
-        {["all", "trending", "ending-soon", "high-stakes", "my-interests"].map((tab) => (
-            <motion.div
-            key={tab}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="relative"
-            >
-            <TabsTrigger value={tab} className="capitalize relative">
-                {tab.replace(/-/g, " ")}
-                {tab === selectedTab && (
-                <motion.div 
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 mx-2"
-                    layoutId="explorePageActiveTab"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                />
-                )}
-            </TabsTrigger>
-            </motion.div>
-        ))}
-        </TabsList>
+          <TabsList className="mb-4 relative">
+            {["all", "trending", "ending-soon", "high-stakes", "my-interests"].map((tab) => (
+              <motion.div
+                key={tab}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="relative"
+              >
+                <TabsTrigger value={tab} className="capitalize relative">
+                  {tab.replace(/-/g, " ")}
+                  {tab === selectedTab && (
+                    <motion.div 
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 mx-2"
+                      layoutId="explorePageActiveTab"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                    />
+                  )}
+                </TabsTrigger>
+              </motion.div>
+            ))}
+          </TabsList>
           <AnimatePresence mode="wait">
             <TabsContent value="all">
               <motion.div 

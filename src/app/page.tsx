@@ -3,16 +3,47 @@
 import Link from "next/link"
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { 
-  Banknote, Trophy, Bell, ChevronDown, Plus, Zap, Search, User, 
-  Users, TrendingUp, Percent, Award, Share2, MessageSquare, Calendar, 
-  Clock, Heart, Flame, ThumbsUp, LucideIcon
+import {
+  Banknote,
+  Trophy,
+  Bell,
+  ChevronDown,
+  Plus,
+  Zap,
+  Search,
+  User,
+  Users,
+  TrendingUp,
+  Percent,
+  Award,
+  Share2,
+  MessageSquare,
+  Calendar,
+  Clock,
+  Heart,
+  Flame,
+  ThumbsUp,
+  LucideIcon,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 
@@ -23,35 +54,35 @@ const containerVariants = {
     opacity: 1,
     transition: {
       staggerChildren: 0.1,
-      delayChildren: 0.3
-    }
-  }
+      delayChildren: 0.3,
+    },
+  },
 }
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
-  show: { 
-    opacity: 1, 
+  show: {
+    opacity: 1,
     y: 0,
     transition: {
       type: "spring",
       stiffness: 300,
-      damping: 24
-    }
-  }
+      damping: 24,
+    },
+  },
 }
 
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.9 },
-  show: { 
-    opacity: 1, 
+  show: {
+    opacity: 1,
     scale: 1,
     transition: {
       type: "spring",
       stiffness: 300,
-      damping: 20
-    } 
-  }
+      damping: 20,
+    },
+  },
 }
 
 const staggerListVariants = {
@@ -59,9 +90,9 @@ const staggerListVariants = {
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.08
-    }
-  }
+      staggerChildren: 0.08,
+    },
+  },
 }
 
 const pulseVariants = {
@@ -70,9 +101,9 @@ const pulseVariants = {
     transition: {
       duration: 1.5,
       repeat: Infinity,
-      repeatType: "reverse" as const
-    }
-  }
+      repeatType: "reverse" as const,
+    },
+  },
 }
 
 const floatVariants = {
@@ -82,11 +113,12 @@ const floatVariants = {
       duration: 2.5,
       repeat: Infinity,
       repeatType: "reverse" as const,
-      ease: "easeInOut"
-    }
-  }
+      ease: "easeInOut",
+    },
+  },
 }
 
+// Example data
 const bets = [
   {
     id: "1",
@@ -108,7 +140,7 @@ const bets = [
     totalRaised: 15,
     progress: 75,
     comments: 8,
-    reactions: 12
+    reactions: 12,
   },
   {
     id: "2",
@@ -117,7 +149,8 @@ const bets = [
       avatar: "/avatars/jamie.png",
       initials: "JW",
     },
-    prediction: "Chiefs will score at least 3 touchdowns against the Raiders",
+    prediction:
+      "Chiefs will score at least 3 touchdowns against the Raiders",
     punishment: "Wear rival team jersey to work for a full day",
     stake: 30,
     deadline: "Monday, 8:00 PM",
@@ -131,7 +164,7 @@ const bets = [
     totalRaised: 25,
     progress: 83,
     comments: 14,
-    reactions: 23
+    reactions: 23,
   },
   {
     id: "3",
@@ -153,28 +186,28 @@ const bets = [
     totalRaised: 25,
     progress: 50,
     comments: 6,
-    reactions: 18
+    reactions: 18,
   },
 ]
 
 const friendActivity = [
-  { 
-    name: "Jordan Kim", 
-    initials: "JK", 
-    action: "placed $25 on Alex's Lakers prediction", 
-    time: "35m ago" 
+  {
+    name: "Jordan Kim",
+    initials: "JK",
+    action: "placed $25 on Alex's Lakers prediction",
+    time: "35m ago",
   },
-  { 
-    name: "Taylor Reed", 
-    initials: "TR", 
-    action: "won $45 from their Chiefs prediction", 
-    time: "2h ago" 
+  {
+    name: "Taylor Reed",
+    initials: "TR",
+    action: "won $45 from their Chiefs prediction",
+    time: "2h ago",
   },
-  { 
-    name: "Pat Brown", 
-    initials: "PB", 
-    action: "completed punishment: ate a ghost pepper on live", 
-    time: "yesterday" 
+  {
+    name: "Pat Brown",
+    initials: "PB",
+    action: "completed punishment: ate a ghost pepper on live",
+    time: "yesterday",
   },
 ]
 
@@ -190,25 +223,28 @@ const popularGroups = [
   { name: "NBA Prediction Pros", members: 63, betsThisWeek: 47 },
 ]
 
+// MAIN PAGE COMPONENT
 export default function HomePage() {
   const [isCreatingBet, setIsCreatingBet] = useState(false)
   const [selectedTab, setSelectedTab] = useState("friends")
-  
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white overflow-hidden">
-      <motion.header 
+      {/* HEADER */}
+      <motion.header
         className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl flex h-16 items-center justify-between">
-          <motion.div 
+          {/* Logo */}
+          <motion.div
             className="flex items-center gap-2"
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
-            <motion.div 
+            <motion.div
               className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white font-bold"
               whileHover={{ rotate: [0, -10, 10, -10, 10, 0] }}
               transition={{ duration: 0.5 }}
@@ -217,22 +253,30 @@ export default function HomePage() {
             </motion.div>
             <span className="font-bold text-xl tracking-tight">BetOrDare</span>
           </motion.div>
-          
+
+          {/* Nav links */}
           <div className="hidden md:flex items-center gap-6">
-            {["Explore", "My Bets", "Friend Groups", "Leaderboard"].map((item, i) => (
-              <motion.div key={i}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 + 0.3 }}
-                whileHover={{ scale: 1.1, color: "#2563EB" }}
-              >
-                <Link href={`/${item.toLowerCase().replace(" ", "-")}`} className="text-sm font-medium transition-colors">
-                  {item}
-                </Link>
-              </motion.div>
-            ))}
+            {["Explore", "My Bets", "Friend Groups", "Leaderboard"].map(
+              (item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 + 0.3 }}
+                  whileHover={{ scale: 1.1, color: "#2563EB" }}
+                >
+                  <Link
+                    href={`/${item.toLowerCase().replace(" ", "-")}`}
+                    className="text-sm font-medium transition-colors"
+                  >
+                    {item}
+                  </Link>
+                </motion.div>
+              )
+            )}
           </div>
-          
+
+          {/* Right side icons */}
           <div className="flex items-center gap-4">
             <motion.div
               whileHover={{ scale: 1.2, rotate: 15 }}
@@ -249,25 +293,30 @@ export default function HomePage() {
               whileTap={{ scale: 0.9 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
-              <Button size="sm" variant="ghost" className="rounded-full relative" asChild>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="rounded-full relative"
+                asChild
+              >
                 <Link href="/notifications">
                   <Bell className="h-5 w-5" />
-                  <motion.span 
+                  <motion.span
                     className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"
-                    animate={{ 
+                    animate={{
                       scale: [1, 1.2, 1],
-                      opacity: [0.7, 1, 0.7]
+                      opacity: [0.7, 1, 0.7],
                     }}
-                    transition={{ 
+                    transition={{
                       repeat: Infinity,
                       duration: 2,
-                      ease: "easeInOut" 
+                      ease: "easeInOut",
                     }}
                   ></motion.span>
                 </Link>
               </Button>
             </motion.div>
-            <motion.div 
+            <motion.div
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -282,45 +331,47 @@ export default function HomePage() {
           </div>
         </div>
       </motion.header>
-      
+
+      {/* MAIN CONTENT */}
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl py-8">
-        <motion.section 
+        {/* Hero / Intro section */}
+        <motion.section
           className="mb-16"
           initial="hidden"
           animate="show"
           variants={containerVariants}
         >
           <div className="flex flex-col gap-4 text-center mb-12 max-w-3xl mx-auto">
-            <motion.h1 
+            <motion.h1
               className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 tracking-tight"
               initial={{ opacity: 0, scale: 0.8, y: 30 }}
-              animate={{ 
-                opacity: 1, 
-                scale: 1, 
+              animate={{
+                opacity: 1,
+                scale: 1,
                 y: 0,
                 transition: {
                   type: "spring",
                   stiffness: 200,
                   damping: 20,
-                  duration: 0.7
-                }
+                  duration: 0.7,
+                },
               }}
             >
-              <motion.span 
+              <motion.span
                 initial={{ display: "inline-block" }}
                 animate={{ rotate: [0, -3, 3, 0] }}
                 transition={{ delay: 1, duration: 0.5 }}
               >
                 Bet
               </motion.span>{" "}
-              <motion.span 
+              <motion.span
                 initial={{ display: "inline-block" }}
                 animate={{ rotate: [0, 3, -3, 0] }}
                 transition={{ delay: 1.2, duration: 0.5 }}
               >
                 Smarter,
               </motion.span>{" "}
-              <motion.span 
+              <motion.span
                 initial={{ display: "inline-block" }}
                 animate={{ rotate: [0, -2, 2, 0] }}
                 transition={{ delay: 1.4, duration: 0.5 }}
@@ -328,7 +379,7 @@ export default function HomePage() {
               >
                 Laugh
               </motion.span>{" "}
-              <motion.span 
+              <motion.span
                 initial={{ display: "inline-block" }}
                 animate={{ rotate: [0, 2, -2, 0] }}
                 transition={{ delay: 1.6, duration: 0.5 }}
@@ -337,34 +388,40 @@ export default function HomePage() {
                 Harder
               </motion.span>
             </motion.h1>
-            <motion.p 
+            <motion.p
               className="text-xl text-slate-600 max-w-2xl mx-auto"
               variants={itemVariants}
             >
-              Make sports predictions with your friends, win their money, or face hilarious punishments — all while strengthening your friendship bonds
+              Make sports predictions with your friends, win their money, or
+              face hilarious punishments — all while strengthening your
+              friendship bonds
             </motion.p>
-            <motion.div 
+            <motion.div
               className="flex flex-wrap justify-center gap-4 mt-6"
               variants={itemVariants}
             >
               <Dialog open={isCreatingBet} onOpenChange={setIsCreatingBet}>
                 <DialogTrigger asChild>
                   <motion.div
-                    whileHover={{ 
+                    whileHover={{
                       scale: 1.05,
-                      boxShadow: "0 10px 25px -5px rgba(59, 130, 246, 0.4)",
+                      boxShadow:
+                        "0 10px 25px -5px rgba(59, 130, 246, 0.4)",
                     }}
                     whileTap={{ scale: 0.95 }}
                     transition={{ type: "spring", stiffness: 400, damping: 17 }}
                   >
-                    <Button size="lg" className="rounded-full px-8 bg-blue-600 hover:bg-blue-700 text-white font-medium transition-all shadow-md hover:shadow-lg">
+                    <Button
+                      size="lg"
+                      className="rounded-full px-8 bg-blue-600 hover:bg-blue-700 text-white font-medium transition-all shadow-md hover:shadow-lg"
+                    >
                       <motion.div
                         animate={{ rotate: [0, 180] }}
                         transition={{ duration: 0.5, delay: 2 }}
                         className="mr-2"
                       >
                         <Plus className="h-5 w-5" />
-                      </motion.div> 
+                      </motion.div>
                       Create a Prediction
                     </Button>
                   </motion.div>
@@ -381,20 +438,30 @@ export default function HomePage() {
                         <DialogHeader>
                           <DialogTitle>Create a New Prediction</DialogTitle>
                           <DialogDescription>
-                            Set your prediction, stake amount, and punishment if you're wrong.
+                            Set your prediction, stake amount, and punishment
+                            if you&apos;re wrong.
                           </DialogDescription>
                         </DialogHeader>
-                        <motion.div 
+                        <motion.div
                           className="grid gap-4 py-4"
                           variants={staggerListVariants}
                           initial="hidden"
                           animate="show"
                         >
-                          <motion.div className="space-y-2" variants={itemVariants}>
-                            <label htmlFor="sport" className="text-sm font-medium">
+                          <motion.div
+                            className="space-y-2"
+                            variants={itemVariants}
+                          >
+                            <label
+                              htmlFor="sport"
+                              className="text-sm font-medium"
+                            >
                               Sport Category
                             </label>
-                            <select id="sport" className="w-full border border-gray-300 rounded-md p-2 text-sm">
+                            <select
+                              id="sport"
+                              className="w-full border border-gray-300 rounded-md p-2 text-sm"
+                            >
                               <option value="nba">NBA Basketball</option>
                               <option value="nfl">NFL Football</option>
                               <option value="mlb">MLB Baseball</option>
@@ -403,8 +470,14 @@ export default function HomePage() {
                               <option value="other">Other</option>
                             </select>
                           </motion.div>
-                          <motion.div className="space-y-2" variants={itemVariants}>
-                            <label htmlFor="prediction" className="text-sm font-medium">
+                          <motion.div
+                            className="space-y-2"
+                            variants={itemVariants}
+                          >
+                            <label
+                              htmlFor="prediction"
+                              className="text-sm font-medium"
+                            >
                               Your Prediction
                             </label>
                             <Input
@@ -412,22 +485,43 @@ export default function HomePage() {
                               placeholder="Lakers will beat the Bulls by 10+ points"
                             />
                           </motion.div>
-                          <motion.div className="grid grid-cols-2 gap-4" variants={itemVariants}>
+                          <motion.div
+                            className="grid grid-cols-2 gap-4"
+                            variants={itemVariants}
+                          >
                             <div className="space-y-2">
-                              <label htmlFor="stake" className="text-sm font-medium">
+                              <label
+                                htmlFor="stake"
+                                className="text-sm font-medium"
+                              >
                                 Required Stake ($)
                               </label>
                               <Input id="stake" type="number" placeholder="25" />
                             </div>
                             <div className="space-y-2">
-                              <label htmlFor="confidence" className="text-sm font-medium">
+                              <label
+                                htmlFor="confidence"
+                                className="text-sm font-medium"
+                              >
                                 Your Confidence (%)
                               </label>
-                              <Input id="confidence" type="number" placeholder="75" min="1" max="99" />
+                              <Input
+                                id="confidence"
+                                type="number"
+                                placeholder="75"
+                                min="1"
+                                max="99"
+                              />
                             </div>
                           </motion.div>
-                          <motion.div className="space-y-2" variants={itemVariants}>
-                            <label htmlFor="punishment" className="text-sm font-medium">
+                          <motion.div
+                            className="space-y-2"
+                            variants={itemVariants}
+                          >
+                            <label
+                              htmlFor="punishment"
+                              className="text-sm font-medium"
+                            >
                               Punishment if Wrong
                             </label>
                             <Input
@@ -435,17 +529,32 @@ export default function HomePage() {
                               placeholder="Eat a spoonful of hot sauce on video"
                             />
                           </motion.div>
-                          <motion.div className="space-y-2" variants={itemVariants}>
-                            <label htmlFor="deadline" className="text-sm font-medium">
+                          <motion.div
+                            className="space-y-2"
+                            variants={itemVariants}
+                          >
+                            <label
+                              htmlFor="deadline"
+                              className="text-sm font-medium"
+                            >
                               Betting Deadline
                             </label>
                             <Input id="deadline" type="datetime-local" />
                           </motion.div>
-                          <motion.div className="space-y-2" variants={itemVariants}>
-                            <label htmlFor="share-with" className="text-sm font-medium">
+                          <motion.div
+                            className="space-y-2"
+                            variants={itemVariants}
+                          >
+                            <label
+                              htmlFor="share-with"
+                              className="text-sm font-medium"
+                            >
                               Share With
                             </label>
-                            <select id="share-with" className="w-full border border-gray-300 rounded-md p-2 text-sm">
+                            <select
+                              id="share-with"
+                              className="w-full border border-gray-300 rounded-md p-2 text-sm"
+                            >
                               <option value="public">Anyone (Public)</option>
                               <option value="friends">Friends Only</option>
                               <option value="group">Specific Group</option>
@@ -457,7 +566,10 @@ export default function HomePage() {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                           >
-                            <Button variant="outline" onClick={() => setIsCreatingBet(false)}>
+                            <Button
+                              variant="outline"
+                              onClick={() => setIsCreatingBet(false)}
+                            >
                               Cancel
                             </Button>
                           </motion.div>
@@ -475,15 +587,21 @@ export default function HomePage() {
                   )}
                 </AnimatePresence>
               </Dialog>
+
               <motion.div
-                whileHover={{ 
+                whileHover={{
                   scale: 1.05,
                   borderColor: "#3B82F6",
                 }}
                 whileTap={{ scale: 0.95 }}
                 transition={{ type: "spring", stiffness: 400, damping: 17 }}
               >
-                <Button variant="outline" size="lg" className="rounded-full px-8 group transition-all hover:bg-blue-50" asChild>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="rounded-full px-8 group transition-all hover:bg-blue-50"
+                  asChild
+                >
                   <Link href="/explore">
                     <motion.div
                       animate={{ rotate: 360 }}
@@ -491,36 +609,36 @@ export default function HomePage() {
                       className="mr-2"
                     >
                       <Search className="h-5 w-5 group-hover:text-blue-600" />
-                    </motion.div> 
+                    </motion.div>
                     Browse Predictions
                   </Link>
                 </Button>
               </motion.div>
             </motion.div>
           </div>
-          
-          <motion.div 
+
+          <motion.div
             className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16"
             variants={staggerListVariants}
             initial="hidden"
             animate="show"
           >
             <motion.div variants={cardVariants}>
-              <FeatureCard 
+              <FeatureCard
                 icon={Banknote}
                 title="Keep It Friendly"
                 description="Money stays within your friend group - no house edge, no platform fees, just pure social fun"
               />
             </motion.div>
             <motion.div variants={cardVariants}>
-              <FeatureCard 
+              <FeatureCard
                 icon={Trophy}
                 title="Double the Stakes"
                 description="Win your friends' money or face hilarious punishment consequences that create lasting memories"
               />
             </motion.div>
             <motion.div variants={cardVariants}>
-              <FeatureCard 
+              <FeatureCard
                 icon={Zap}
                 title="More Excitement"
                 description="Transform ordinary games into edge-of-your-seat experiences when your predictions and pride are on the line"
@@ -528,17 +646,20 @@ export default function HomePage() {
             </motion.div>
           </motion.div>
         </motion.section>
-        
-        <motion.div 
+
+        {/* Main columns layout */}
+        <motion.div
           className="grid grid-cols-1 lg:grid-cols-3 gap-8"
           variants={containerVariants}
           initial="hidden"
           animate="show"
         >
-          <motion.div 
+          {/* Left + middle column */}
+          <motion.div
             className="lg:col-span-2 space-y-8"
             variants={itemVariants}
           >
+            {/* Active Predictions */}
             <motion.section
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -551,7 +672,7 @@ export default function HomePage() {
                   whileTap={{ scale: 0.9 }}
                 >
                   <Button variant="ghost" size="sm" className="gap-1">
-                    All Predictions 
+                    All Predictions
                     <motion.div
                       animate={{ y: [0, 3, 0] }}
                       transition={{ repeat: Infinity, duration: 1.5 }}
@@ -561,35 +682,35 @@ export default function HomePage() {
                   </Button>
                 </motion.div>
               </div>
-              
-              <Tabs 
-                defaultValue="friends" 
+
+              <Tabs
+                defaultValue="friends"
                 className="mb-8"
                 onValueChange={setSelectedTab}
               >
-              <TabsList className="mb-4 relative">
-                {["friends", "trending", "new"].map((tab) => (
-                  <motion.div
-                    key={tab}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="relative"
-                  >
-                    <TabsTrigger value={tab} className="capitalize relative">
-                      {tab}
-                      {tab === selectedTab && (
-                        <motion.div 
-                          className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 mx-2"
-                          layoutId="homePageActiveTab"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                        />
-                      )}
-                    </TabsTrigger>
-                  </motion.div>
-                ))}
-              </TabsList>
+                <TabsList className="mb-4 relative">
+                  {["friends", "trending", "new"].map((tab) => (
+                    <motion.div
+                      key={tab}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="relative"
+                    >
+                      <TabsTrigger value={tab} className="capitalize relative">
+                        {tab}
+                        {tab === selectedTab && (
+                          <motion.div
+                            className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 mx-2"
+                            layoutId="homePageActiveTab"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                          />
+                        )}
+                      </TabsTrigger>
+                    </motion.div>
+                  ))}
+                </TabsList>
                 <AnimatePresence mode="wait">
                   <TabsContent value="friends" className="space-y-4">
                     <motion.div
@@ -598,15 +719,19 @@ export default function HomePage() {
                       animate="show"
                     >
                       {bets.map((bet) => (
-                        <motion.div 
+                        <motion.div
                           key={bet.id}
                           variants={cardVariants}
-                          whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
+                          whileHover={{
+                            y: -5,
+                            boxShadow:
+                              "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
+                          }}
                         >
                           <BetCard bet={bet} />
                         </motion.div>
                       ))}
-                      <motion.div 
+                      <motion.div
                         className="text-center py-4"
                         variants={itemVariants}
                       >
@@ -615,7 +740,7 @@ export default function HomePage() {
                           whileTap={{ scale: 0.95 }}
                         >
                           <Button variant="outline" className="gap-1">
-                            Load More 
+                            Load More
                             <motion.div
                               animate={{ y: [0, 3, 0] }}
                               transition={{ repeat: Infinity, duration: 1.5 }}
@@ -628,7 +753,7 @@ export default function HomePage() {
                     </motion.div>
                   </TabsContent>
                   <TabsContent value="trending">
-                    <motion.div 
+                    <motion.div
                       className="text-center py-16 text-gray-500"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -641,13 +766,16 @@ export default function HomePage() {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         animate="pulse"
+                        variants={pulseVariants}
                       >
-                        <Button className="bg-blue-600 hover:bg-blue-700">Sign Up</Button>
+                        <Button className="bg-blue-600 hover:bg-blue-700">
+                          Sign Up
+                        </Button>
                       </motion.div>
                     </motion.div>
                   </TabsContent>
                   <TabsContent value="new">
-                    <motion.div 
+                    <motion.div
                       className="text-center py-16 text-gray-500"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -662,14 +790,17 @@ export default function HomePage() {
                         variants={pulseVariants}
                         animate="pulse"
                       >
-                        <Button className="bg-blue-600 hover:bg-blue-700">Sign Up</Button>
+                        <Button className="bg-blue-600 hover:bg-blue-700">
+                          Sign Up
+                        </Button>
                       </motion.div>
                     </motion.div>
                   </TabsContent>
                 </AnimatePresence>
               </Tabs>
             </motion.section>
-            
+
+            {/* Popular Punishments */}
             <motion.section
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -686,37 +817,47 @@ export default function HomePage() {
                   </Button>
                 </motion.div>
               </div>
-              
-              <motion.div 
+
+              <motion.div
                 className="grid grid-cols-1 sm:grid-cols-3 gap-4"
                 variants={staggerListVariants}
                 initial="hidden"
                 animate="show"
               >
-                <motion.div variants={cardVariants} whileHover={{ y: -5, scale: 1.02 }}>
-                  <PunishmentCard 
-                    title="Hot Ones Challenge" 
-                    description="Eat progressively spicier hot wings on camera" 
-                    usageCount={42} 
+                <motion.div
+                  variants={cardVariants}
+                  whileHover={{ y: -5, scale: 1.02 }}
+                >
+                  <PunishmentCard
+                    title="Hot Ones Challenge"
+                    description="Eat progressively spicier hot wings on camera"
+                    usageCount={42}
                   />
                 </motion.div>
-                <motion.div variants={cardVariants} whileHover={{ y: -5, scale: 1.02 }}>
-                  <PunishmentCard 
-                    title="Bad Karaoke" 
-                    description="Sing a song of the group's choice at a public karaoke night" 
-                    usageCount={38} 
+                <motion.div
+                  variants={cardVariants}
+                  whileHover={{ y: -5, scale: 1.02 }}
+                >
+                  <PunishmentCard
+                    title="Bad Karaoke"
+                    description="Sing a song of the group's choice at a public karaoke night"
+                    usageCount={38}
                   />
                 </motion.div>
-                <motion.div variants={cardVariants} whileHover={{ y: -5, scale: 1.02 }}>
-                  <PunishmentCard 
-                    title="Rival Jersey Day" 
-                    description="Wear your most hated team's jersey all day in public" 
-                    usageCount={35} 
+                <motion.div
+                  variants={cardVariants}
+                  whileHover={{ y: -5, scale: 1.02 }}
+                >
+                  <PunishmentCard
+                    title="Rival Jersey Day"
+                    description="Wear your most hated team's jersey all day in public"
+                    usageCount={35}
                   />
                 </motion.div>
               </motion.div>
             </motion.section>
 
+            {/* Upcoming Events */}
             <motion.section
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -733,15 +874,19 @@ export default function HomePage() {
                   </Button>
                 </motion.div>
               </div>
-              
-              <motion.div 
+
+              <motion.div
                 className="grid grid-cols-1 sm:grid-cols-3 gap-4"
                 variants={staggerListVariants}
                 initial="hidden"
                 animate="show"
               >
                 {upcomingEvents.map((event, index) => (
-                  <motion.div key={index} variants={cardVariants} whileHover={{ y: -5, scale: 1.02 }}>
+                  <motion.div
+                    key={index}
+                    variants={cardVariants}
+                    whileHover={{ y: -5, scale: 1.02 }}
+                  >
                     <Card className="border-2 hover:border-blue-200 transition-all hover:shadow-md">
                       <CardHeader className="pb-2">
                         <div className="flex justify-between items-center">
@@ -759,7 +904,9 @@ export default function HomePage() {
                       </CardHeader>
                       <CardContent>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">{event.betCount} active bets</span>
+                          <span className="text-sm text-gray-600">
+                            {event.betCount} active bets
+                          </span>
                           <motion.div
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
@@ -777,13 +924,15 @@ export default function HomePage() {
             </motion.section>
           </motion.div>
 
-          <motion.div 
+          {/* Right column: sidebars */}
+          <motion.div
             className="space-y-8"
             variants={staggerListVariants}
             initial="hidden"
             animate="show"
             transition={{ delayChildren: 0.8, staggerChildren: 0.2 }}
           >
+            {/* Friend Activity */}
             <motion.div variants={cardVariants}>
               <Card className="border-2 border-blue-100">
                 <CardHeader className="pb-2">
@@ -797,18 +946,22 @@ export default function HomePage() {
                   </div>
                 </CardHeader>
                 <CardContent className="pt-0">
-                  <motion.div 
+                  <motion.div
                     className="space-y-4"
                     variants={staggerListVariants}
                     initial="hidden"
                     animate="show"
                   >
                     {friendActivity.map((activity, index) => (
-                      <motion.div 
-                        key={index} 
+                      <motion.div
+                        key={index}
                         className="flex items-start gap-3 pb-4 border-b last:border-0"
                         variants={itemVariants}
-                        whileHover={{ x: 5, backgroundColor: "rgba(59, 130, 246, 0.05)", borderRadius: "0.375rem" }}
+                        whileHover={{
+                          x: 5,
+                          backgroundColor: "rgba(59, 130, 246, 0.05)",
+                          borderRadius: "0.375rem",
+                        }}
                         transition={{ type: "spring", stiffness: 400, damping: 17 }}
                       >
                         <motion.div whileHover={{ scale: 1.1, rotate: 10 }}>
@@ -818,15 +971,22 @@ export default function HomePage() {
                         </motion.div>
                         <div className="space-y-1">
                           <div className="flex items-baseline gap-1">
-                            <span className="font-medium text-sm">{activity.name}</span>
-                            <span className="text-xs text-gray-500">{activity.time}</span>
+                            <span className="font-medium text-sm">
+                              {activity.name}
+                            </span>
+                            <span className="text-xs text-gray-500">
+                              {activity.time}
+                            </span>
                           </div>
-                          <p className="text-sm text-gray-700">{activity.action}</p>
+                          <p className="text-sm text-gray-700">
+                            {activity.action}
+                          </p>
                         </div>
                       </motion.div>
                     ))}
                   </motion.div>
-                  <motion.div className="mt-4"
+                  <motion.div
+                    className="mt-4"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -838,6 +998,7 @@ export default function HomePage() {
               </Card>
             </motion.div>
 
+            {/* Stats */}
             <motion.div variants={cardVariants}>
               <Card className="border-2 border-blue-100">
                 <CardHeader className="pb-2">
@@ -845,7 +1006,12 @@ export default function HomePage() {
                     <CardTitle className="text-lg flex items-center gap-2">
                       <motion.div
                         animate={{ rotate: [0, 10, -10, 10, 0] }}
-                        transition={{ delay: 2.5, duration: 1, repeat: Infinity, repeatDelay: 5 }}
+                        transition={{
+                          delay: 2.5,
+                          duration: 1,
+                          repeat: Infinity,
+                          repeatDelay: 5,
+                        }}
                       >
                         <Award className="h-5 w-5 text-blue-600" />
                       </motion.div>
@@ -859,24 +1025,35 @@ export default function HomePage() {
                       { value: "76%", label: "Win Rate" },
                       { value: "$124", label: "Net Winnings" },
                       { value: "12", label: "Predictions Made" },
-                      { value: "3", label: "Punishments Taken" }
+                      { value: "3", label: "Punishments Taken" },
                     ].map((stat, index) => (
-                      <motion.div 
-                        key={index} 
+                      <motion.div
+                        key={index}
                         className="text-center"
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 1.2 + index * 0.1, duration: 0.3 }}
                         whileHover={{ scale: 1.1, y: -5 }}
                       >
-                        <motion.div 
+                        <motion.div
                           className="text-blue-600 text-2xl font-bold"
-                          animate={index === 0 ? { scale: [1, 1.1, 1] } : {}}
-                          transition={{ delay: 2.8, duration: 0.5, repeat: 1, repeatDelay: 5 }}
+                          animate={
+                            index === 0
+                              ? { scale: [1, 1.1, 1] }
+                              : {}
+                          }
+                          transition={{
+                            delay: 2.8,
+                            duration: 0.5,
+                            repeat: 1,
+                            repeatDelay: 5,
+                          }}
                         >
                           {stat.value}
                         </motion.div>
-                        <div className="text-sm text-gray-600">{stat.label}</div>
+                        <div className="text-sm text-gray-600">
+                          {stat.label}
+                        </div>
                       </motion.div>
                     ))}
                   </div>
@@ -892,6 +1069,7 @@ export default function HomePage() {
               </Card>
             </motion.div>
 
+            {/* Trending Groups */}
             <motion.div variants={cardVariants}>
               <Card className="border-2 border-blue-100">
                 <CardHeader className="pb-2">
@@ -899,7 +1077,12 @@ export default function HomePage() {
                     <CardTitle className="text-lg flex items-center gap-2">
                       <motion.div
                         animate={{ y: [0, -5, 0] }}
-                        transition={{ delay: 3, duration: 1, repeat: Infinity, repeatDelay: 5 }}
+                        transition={{
+                          delay: 3,
+                          duration: 1,
+                          repeat: Infinity,
+                          repeatDelay: 5,
+                        }}
                       >
                         <TrendingUp className="h-5 w-5 text-blue-600" />
                       </motion.div>
@@ -908,22 +1091,28 @@ export default function HomePage() {
                   </div>
                 </CardHeader>
                 <CardContent className="pt-0">
-                  <motion.div 
+                  <motion.div
                     className="space-y-4"
                     variants={staggerListVariants}
                     initial="hidden"
                     animate="show"
                   >
                     {popularGroups.map((group, index) => (
-                      <motion.div 
-                        key={index} 
+                      <motion.div
+                        key={index}
                         className="flex items-center justify-between py-2 border-b last:border-0"
                         variants={itemVariants}
-                        whileHover={{ x: 5, backgroundColor: "rgba(59, 130, 246, 0.05)", borderRadius: "0.375rem" }}
+                        whileHover={{
+                          x: 5,
+                          backgroundColor: "rgba(59, 130, 246, 0.05)",
+                          borderRadius: "0.375rem",
+                        }}
                       >
                         <div>
                           <p className="font-medium">{group.name}</p>
-                          <p className="text-xs text-gray-600">{group.members} members</p>
+                          <p className="text-xs text-gray-600">
+                            {group.members} members
+                          </p>
                         </div>
                         <motion.div
                           whileHover={{ scale: 1.1 }}
@@ -936,7 +1125,8 @@ export default function HomePage() {
                       </motion.div>
                     ))}
                   </motion.div>
-                  <motion.div className="mt-4"
+                  <motion.div
+                    className="mt-4"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -950,8 +1140,9 @@ export default function HomePage() {
           </motion.div>
         </motion.div>
       </main>
-      
-      <motion.footer 
+
+      {/* FOOTER */}
+      <motion.footer
         className="border-t py-12 bg-gray-50 mt-16"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -959,11 +1150,11 @@ export default function HomePage() {
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl flex flex-col md:flex-row justify-between items-center">
           <div className="mb-8 md:mb-0">
-            <motion.div 
+            <motion.div
               className="flex items-center gap-2"
               whileHover={{ scale: 1.05 }}
             >
-              <motion.div 
+              <motion.div
                 className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white font-bold text-xs"
                 whileHover={{ rotate: 360 }}
                 transition={{ duration: 0.5 }}
@@ -972,8 +1163,12 @@ export default function HomePage() {
               </motion.div>
               <span className="font-bold">BetOrDare</span>
             </motion.div>
-            <p className="text-sm text-gray-500 mt-2">© 2025 LeBTErs, Inc. All rights reserved.</p>
-            <p className="text-xs text-gray-500 mt-1">Making sports even more fun, one bet at a time.</p>
+            <p className="text-sm text-gray-500 mt-2">
+              © 2025 LeBTErs, Inc. All rights reserved.
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              Making sports even more fun, one bet at a time.
+            </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8 sm:gap-16">
             {[
@@ -982,28 +1177,28 @@ export default function HomePage() {
                 links: [
                   { name: "About", href: "/about" },
                   { name: "Careers", href: "/careers" },
-                  { name: "Blog", href: "/blog" }
-                ]
+                  { name: "Blog", href: "/blog" },
+                ],
               },
               {
                 title: "Features",
                 links: [
                   { name: "Predictions", href: "/predictions" },
                   { name: "Friend Groups", href: "/groups" },
-                  { name: "Punishment Ideas", href: "/punishments" }
-                ]
+                  { name: "Punishment Ideas", href: "/punishments" },
+                ],
               },
               {
                 title: "Support",
                 links: [
                   { name: "Contact", href: "/contact" },
                   { name: "FAQ", href: "/faq" },
-                  { name: "Terms", href: "/terms" }
-                ]
-              }
+                  { name: "Terms", href: "/terms" },
+                ],
+              },
             ].map((section, sectionIndex) => (
-              <motion.div 
-                key={sectionIndex} 
+              <motion.div
+                key={sectionIndex}
                 className="space-y-2"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -1012,11 +1207,14 @@ export default function HomePage() {
                 <h4 className="font-medium text-sm">{section.title}</h4>
                 <ul className="space-y-1">
                   {section.links.map((link, linkIndex) => (
-                    <motion.li 
+                    <motion.li
                       key={linkIndex}
                       whileHover={{ x: 5, color: "#2563EB" }}
                     >
-                      <Link href={link.href} className="text-sm text-gray-500 hover:text-gray-900">
+                      <Link
+                        href={link.href}
+                        className="text-sm text-gray-500 hover:text-gray-900"
+                      >
                         {link.name}
                       </Link>
                     </motion.li>
@@ -1031,17 +1229,18 @@ export default function HomePage() {
   )
 }
 
+// FEATURE CARD
 interface FeatureCardProps {
-  icon: LucideIcon;
-  title: string;
-  description: string;
+  icon: LucideIcon
+  title: string
+  description: string
 }
 
 function FeatureCard({ icon: Icon, title, description }: FeatureCardProps) {
   return (
     <Card className="transition-all hover:shadow-md hover:border-blue-200 border-2 h-full overflow-hidden">
       <CardHeader className="pb-2">
-        <motion.div 
+        <motion.div
           className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-2"
           whileHover={{ scale: 1.1, backgroundColor: "#DBEAFE" }}
           whileTap={{ scale: 0.9 }}
@@ -1062,28 +1261,29 @@ function FeatureCard({ icon: Icon, title, description }: FeatureCardProps) {
   )
 }
 
+// BET CARD
 interface Bet {
-  id: string;
+  id: string
   user: {
-    name: string;
-    avatar: string;
-    initials: string;
-  };
-  prediction: string;
-  punishment: string;
-  stake: number;
-  deadline: string;
-  impliedOdds: number;
-  sportCategory: string;
+    name: string
+    avatar: string
+    initials: string
+  }
+  prediction: string
+  punishment: string
+  stake: number
+  deadline: string
+  impliedOdds: number
+  sportCategory: string
   contributors: Array<{
-    name: string;
-    initials: string;
-    amount: number;
-  }>;
-  totalRaised: number;
-  progress: number;
-  comments: number;
-  reactions: number;
+    name: string
+    initials: string
+    amount: number
+  }>
+  totalRaised: number
+  progress: number
+  comments: number
+  reactions: number
 }
 
 function BetCard({ bet }: { bet: Bet }) {
@@ -1107,7 +1307,7 @@ function BetCard({ bet }: { bet: Bet }) {
                 <span className="text-xs text-gray-500 flex items-center gap-1">
                   <Clock className="h-3 w-3" /> {bet.deadline}
                 </span>
-                <motion.span 
+                <motion.span
                   className="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded"
                   whileHover={{ scale: 1.1, backgroundColor: "#DBEAFE" }}
                 >
@@ -1116,10 +1316,7 @@ function BetCard({ bet }: { bet: Bet }) {
               </div>
             </div>
           </div>
-          <motion.div
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
+          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
             <Button variant="outline" size="sm">
               Details
             </Button>
@@ -1130,7 +1327,7 @@ function BetCard({ bet }: { bet: Bet }) {
         <div className="space-y-4">
           <div>
             <div className="flex items-start gap-2 mb-2">
-              <motion.div 
+              <motion.div
                 className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full mt-0.5"
                 whileHover={{ scale: 1.1, backgroundColor: "#DBEAFE" }}
               >
@@ -1139,7 +1336,7 @@ function BetCard({ bet }: { bet: Bet }) {
               <p className="font-medium flex-1">{bet.prediction}</p>
             </div>
             <div className="flex items-start gap-2">
-              <motion.div 
+              <motion.div
                 className="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full mt-0.5"
                 whileHover={{ scale: 1.1, backgroundColor: "#FEE2E2" }}
                 whileTap={{ scale: 0.9 }}
@@ -1149,32 +1346,39 @@ function BetCard({ bet }: { bet: Bet }) {
               <p className="text-sm flex-1">{bet.punishment}</p>
             </div>
           </div>
-          
-          <motion.div 
+
+          <motion.div
             className="flex justify-between bg-gray-50 p-2 rounded-md"
             whileHover={{ backgroundColor: "#F8FAFC" }}
           >
             {[
               { value: `$${bet.stake}`, label: "Total Stake" },
               { value: `${bet.impliedOdds}%`, label: "Implied Odds" },
-              { value: `${(100 / bet.impliedOdds).toFixed(2)}x`, label: "Potential Payout" }
+              {
+                value: `${(100 / bet.impliedOdds).toFixed(2)}x`,
+                label: "Potential Payout",
+              },
             ].map((stat, index) => (
-              <motion.div 
-                key={index} 
+              <motion.div
+                key={index}
                 className="text-center"
                 whileHover={{ scale: 1.1, y: -2 }}
               >
-                <motion.div 
+                <motion.div
                   className="text-sm font-medium"
-                  animate={index === 1 ? { 
-                    scale: [1, 1.1, 1],
-                    color: ["#000", "#2563EB", "#000"]
-                  } : {}}
-                  transition={{ 
+                  animate={
+                    index === 1
+                      ? {
+                          scale: [1, 1.1, 1],
+                          color: ["#000", "#2563EB", "#000"],
+                        }
+                      : {}
+                  }
+                  transition={{
                     delay: index * 0.3 + 3,
                     duration: 0.7,
                     repeat: 1,
-                    repeatDelay: 7
+                    repeatDelay: 7,
                   }}
                 >
                   {stat.value}
@@ -1183,14 +1387,14 @@ function BetCard({ bet }: { bet: Bet }) {
               </motion.div>
             ))}
           </motion.div>
-          
+
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span>Stake progress: ${bet.totalRaised} of ${bet.stake}</span>
               <span className="font-medium">{bet.progress}%</span>
             </div>
             <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-              <motion.div 
+              <motion.div
                 className="h-full bg-blue-600 rounded-full"
                 initial={{ width: "0%" }}
                 animate={{ width: `${bet.progress}%` }}
@@ -1204,17 +1408,19 @@ function BetCard({ bet }: { bet: Bet }) {
         <div className="flex items-center justify-between">
           <div className="flex -space-x-2">
             {bet.contributors.map((contributor, i) => (
-              <motion.div 
+              <motion.div
                 key={i}
                 whileHover={{ scale: 1.2, zIndex: 10 }}
                 transition={{ type: "spring", stiffness: 300, damping: 10 }}
               >
                 <Avatar className="h-6 w-6 border-2 border-white">
-                  <AvatarFallback className="text-xs">{contributor.initials}</AvatarFallback>
+                  <AvatarFallback className="text-xs">
+                    {contributor.initials}
+                  </AvatarFallback>
                 </Avatar>
               </motion.div>
             ))}
-            <motion.div 
+            <motion.div
               className="h-6 w-6 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center text-xs text-gray-600"
               whileHover={{ scale: 1.2, backgroundColor: "#E0F2FE", zIndex: 10 }}
             >
@@ -1222,38 +1428,40 @@ function BetCard({ bet }: { bet: Bet }) {
             </motion.div>
           </div>
           <div className="flex items-center gap-3">
-            <motion.span 
+            <motion.span
               className="text-xs text-gray-500 flex items-center"
               whileHover={{ scale: 1.2, color: "#2563EB" }}
             >
-              <MessageSquare className="h-3 w-3 mr-1" />{bet.comments}
+              <MessageSquare className="h-3 w-3 mr-1" />
+              {bet.comments}
             </motion.span>
-            <motion.span 
+            <motion.span
               className="text-xs text-gray-500 flex items-center"
-              whileHover={{ 
-              scale: 1.2, 
-              color: "#DC2626",
+              whileHover={{
+                scale: 1.2,
+                color: "#DC2626",
               }}
               whileTap={{ scale: 0.9 }}
               animate={{
-              scale: [1, 1.1, 1],
+                scale: [1, 1.1, 1],
               }}
               transition={{
-              repeat: 1,
-              repeatDelay: 5,
-              duration: 0.4,
-              delay: 3
+                repeat: 1,
+                repeatDelay: 5,
+                duration: 0.4,
+                delay: 3,
               }}
             >
-              <Heart className="h-3 w-3 mr-1" />{bet.reactions}
+              <Heart className="h-3 w-3 mr-1" />
+              {bet.reactions}
             </motion.span>
           </div>
         </div>
         <div className="flex gap-2">
-          <motion.div 
+          <motion.div
             className="flex-1"
-            whileHover={{ 
-              scale: 1.03, 
+            whileHover={{
+              scale: 1.03,
               boxShadow: "0 10px 25px -5px rgba(59, 130, 246, 0.4)",
             }}
             whileTap={{ scale: 0.95 }}
@@ -1276,10 +1484,11 @@ function BetCard({ bet }: { bet: Bet }) {
   )
 }
 
+// PUNISHMENT CARD
 interface PunishmentCardProps {
-  title: string;
-  description: string;
-  usageCount: number;
+  title: string
+  description: string
+  usageCount: number
 }
 
 function PunishmentCard({ title, description, usageCount }: PunishmentCardProps) {
@@ -1291,29 +1500,26 @@ function PunishmentCard({ title, description, usageCount }: PunishmentCardProps)
       <CardContent>
         <p className="text-sm text-gray-600 mb-3">{description}</p>
         <div className="flex items-center justify-between">
-          <motion.span 
+          <motion.span
             className="text-xs font-medium text-gray-500 flex items-center"
             whileHover={{ scale: 1.1 }}
           >
             <motion.div
-              animate={{ 
+              animate={{
                 rotate: [0, 5, -5, 5, 0],
-                color: ["#F97316", "#DC2626", "#F97316"]
+                color: ["#F97316", "#DC2626", "#F97316"],
               }}
-              transition={{ 
-                repeat: Infinity, 
+              transition={{
+                repeat: Infinity,
                 repeatDelay: 5,
-                duration: 0.5
+                duration: 0.5,
               }}
             >
               <Flame className="h-3 w-3 mr-1 text-orange-500" />
             </motion.div>
             Used {usageCount} times
           </motion.span>
-          <motion.div
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
+          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
             <Button size="sm" variant="ghost" className="gap-1">
               <Plus className="h-3 w-3" /> Use This
             </Button>

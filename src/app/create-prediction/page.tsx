@@ -4,7 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { 
-  ArrowLeft, Plus, Calendar, Trophy, Award, Users, 
+  ArrowLeft, Trophy, Award, Users, 
   Save, Eye, EyeOff, Clock, Check
 } from "lucide-react"
 
@@ -22,13 +22,10 @@ import {
 import { 
   Card, 
   CardContent, 
-  CardDescription, 
-  CardFooter, 
   CardHeader, 
   CardTitle 
 } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
 // Animation variants
 const containerVariants = {
@@ -85,12 +82,12 @@ const popularPunishments = [
   },
   { 
     title: "Bad Karaoke", 
-    description: "Sing a song of the group's choice at a public karaoke night",
+    description: "Sing a song of the group&#39;s choice at a public karaoke night",
     difficulty: "Medium"
   },
   { 
     title: "Rival Jersey Day", 
-    description: "Wear your most hated team's jersey all day in public",
+    description: "Wear your most hated team&#39;s jersey all day in public",
     difficulty: "Easy"
   },
   { 
@@ -132,51 +129,46 @@ export default function CreatePredictionPage() {
     stake: "25",
     punishment: "",
     deadline: "",
-    shareWith: "public" as "public" | "friends" | "group"
+    shareWith: "public"
   })
 
-const handleInputChange = (field: keyof PredictionFormData, value: string): void => {
+  const handleInputChange = (field: keyof PredictionFormData, value: string): void => {
     setFormData({
-        ...formData,
-        [field]: value
+      ...formData,
+      [field]: value
     })
-}
+  }
 
-interface PunishmentOption {
-    title: string;
-    description: string;
-}
-
-const handlePunishmentSelect = (title: string, description: string): void => {
-    setSelectedPunishment(title);
-    handleInputChange("punishment", description);
-};
-
-  // Function to calculate the estimated odds from confidence
-  const calculateOdds = () => {
-    // Simple conversion from confidence percentage to odds
+  // Use this so that calculateOdds is no longer "unused"
+  const calculateOdds = (): string => {
     const confValue = confidence[0]
     return `${(100 / confValue).toFixed(2)}x`
   }
 
-const handleSubmit = (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>): void => {
+  const handlePunishmentSelect = (title: string, description: string): void => {
+    setSelectedPunishment(title)
+    handleInputChange("punishment", description)
+  }
+
+  const handleSubmit = (
+    e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>
+  ): void => {
     e.preventDefault()
     
     // Form validation
     if (!formData.sportCategory || !formData.prediction || !formData.stake || !formData.punishment) {
-        alert("Please fill out all required fields")
-        return
+      alert("Please fill out all required fields")
+      return
     }
     
     // Would normally submit to API here
     console.log("Submitting prediction:", formData)
     
     // Redirect to homepage after successful submission
-    // In a real app, you'd use a loading state and handle API responses
     setTimeout(() => {
-        window.location.href = "/"
+      window.location.href = "/"
     }, 1000)
-}
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white overflow-hidden framer-motion-cleanup">
@@ -277,7 +269,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTM
             className="text-slate-600 mb-8"
             variants={itemVariants}
           >
-            Make a sports prediction, set a stake amount, and choose a punishment if you're wrong
+            Make a sports prediction, set a stake amount, and choose a punishment if you&#39;re wrong
           </motion.p>
         </motion.div>
 
@@ -292,6 +284,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTM
               <PredictionPreview 
                 formData={formData}
                 confidence={confidence[0]}
+                calculateOdds={calculateOdds}
               />
             ) : (
               <form className="space-y-6" onSubmit={handleSubmit}>
@@ -340,7 +333,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTM
                         rows={3}
                       />
                       <p className="text-xs text-gray-500 mt-1">
-                        Be specific about what you're predicting to avoid any disputes later
+                        Be specific about what you&#39;re predicting to avoid any disputes later
                       </p>
                     </div>
                     
@@ -424,7 +417,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTM
                           <div 
                             key={index}
                             className={`p-3 rounded-md border cursor-pointer transition-all hover:border-blue-300 hover:bg-blue-50 ${
-                              selectedPunishment === punishment.title ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+                              selectedPunishment === punishment.title ? "border-blue-500 bg-blue-50" : "border-gray-200"
                             }`}
                             onClick={() => handlePunishmentSelect(punishment.title, punishment.description)}
                           >
@@ -432,9 +425,9 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTM
                               <h4 className="font-medium text-sm">{punishment.title}</h4>
                               <span 
                                 className={`text-xs px-2 py-0.5 rounded-full ${
-                                  punishment.difficulty === 'Easy' ? 'bg-green-100 text-green-800' :
-                                  punishment.difficulty === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
-                                  'bg-red-100 text-red-800'
+                                  punishment.difficulty === "Easy" ? "bg-green-100 text-green-800" :
+                                  punishment.difficulty === "Medium" ? "bg-yellow-100 text-yellow-800" :
+                                  "bg-red-100 text-red-800"
                                 }`}
                               >
                                 {punishment.difficulty}
@@ -474,7 +467,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTM
                       </Select>
                     </div>
                     
-                    {formData.shareWith === 'group' && (
+                    {formData.shareWith === "group" && (
                       <div className="pt-2">
                         <label className="block text-sm font-medium mb-2">
                           Select Group
@@ -546,7 +539,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTM
                   <div className="border-b pb-3">
                     <h4 className="font-medium text-sm mb-1">Set Fair Stakes</h4>
                     <p className="text-xs text-gray-600">
-                      Choose an amount that's fun but not financially burdensome for your friends
+                      Choose an amount that&#39;s fun but not financially burdensome for your friends
                     </p>
                   </div>
                   <div className="border-b pb-3">
@@ -626,7 +619,15 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTM
 }
 
 // Preview component for the prediction
-function PredictionPreview({ formData, confidence }: { formData: PredictionFormData, confidence: number }) {
+function PredictionPreview({
+  formData,
+  confidence,
+  calculateOdds
+}: { 
+  formData: PredictionFormData, 
+  confidence: number,
+  calculateOdds: () => string 
+}) {
   return (
     <motion.div
       initial="hidden"
@@ -688,7 +689,7 @@ function PredictionPreview({ formData, confidence }: { formData: PredictionFormD
             </div>
             <div className="text-center">
               <div className="text-sm font-medium">
-                {(100 / confidence).toFixed(2)}x
+                {calculateOdds()}
               </div>
               <div className="text-xs text-gray-500">Potential Payout</div>
             </div>
@@ -709,12 +710,12 @@ function PredictionPreview({ formData, confidence }: { formData: PredictionFormD
               <Clock className="h-4 w-4 text-gray-500" />
               <span>
                 {formData.deadline 
-                  ? new Date(formData.deadline).toLocaleDateString('en-US', { 
-                      weekday: 'long', 
-                      month: 'short', 
-                      day: 'numeric',
-                      hour: 'numeric',
-                      minute: 'numeric'
+                  ? new Date(formData.deadline).toLocaleDateString("en-US", { 
+                      weekday: "long", 
+                      month: "short", 
+                      day: "numeric",
+                      hour: "numeric",
+                      minute: "numeric"
                     }) 
                   : "Deadline not set"}
               </span>
@@ -723,9 +724,9 @@ function PredictionPreview({ formData, confidence }: { formData: PredictionFormD
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4 text-gray-500" />
               <span>
-                {formData.shareWith === 'public' ? 'Public' : 
-                 formData.shareWith === 'friends' ? 'All Friends' : 
-                 'Specific Group'}
+                {formData.shareWith === "public" ? "Public" : 
+                 formData.shareWith === "friends" ? "All Friends" : 
+                 "Specific Group"}
               </span>
             </div>
           </div>
