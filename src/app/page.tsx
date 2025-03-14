@@ -14,7 +14,6 @@ import {
   User,
   Users,
   TrendingUp,
-  Percent,
   Award,
   Share2,
   MessageSquare,
@@ -22,7 +21,6 @@ import {
   Clock,
   Heart,
   Flame,
-  ThumbsUp,
   LucideIcon,
 } from "lucide-react"
 
@@ -30,7 +28,6 @@ import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
