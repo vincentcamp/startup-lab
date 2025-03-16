@@ -120,9 +120,9 @@ const bets = [
   {
     id: "1",
     user: {
-      name: "Alex Thompson",
+      name: "Marcus Han",
       avatar: "/avatars/alex.png",
-      initials: "AT",
+      initials: "MH",
     },
     prediction: "Lakers will beat the Nets by at least 10 points on Sunday",
     punishment: "Eat a raw onion like an apple on Instagram Live",
@@ -142,9 +142,9 @@ const bets = [
   {
     id: "2",
     user: {
-      name: "Jamie Wilson",
+      name: "Jamie Valdes",
       avatar: "/avatars/jamie.png",
-      initials: "JW",
+      initials: "JV",
     },
     prediction:
       "Chiefs will score at least 3 touchdowns against the Raiders",
@@ -166,9 +166,9 @@ const bets = [
   {
     id: "3",
     user: {
-      name: "Dana Rodriguez",
+      name: "Nicole Wu",
       avatar: "/avatars/dana.png",
-      initials: "DR",
+      initials: "NW",
     },
     prediction: "Tiger Woods will finish in the top 10 at the Masters",
     punishment: "Shave head completely bald on livestream",
@@ -1344,12 +1344,34 @@ function BetCard({ bet }: { bet: Bet }) {
             </div>
           </div>
 
+          {/* New outcomes section */}
+          <motion.div
+            className="bg-gray-50 p-3 rounded-md border border-gray-100"
+            whileHover={{ backgroundColor: "#F8FAFC" }}
+          >
+            <p className="text-xs uppercase font-semibold text-gray-500 mb-2">Potential Outcomes</p>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-blue-50 p-2 rounded-md">
+                <p className="text-xs font-bold text-blue-700 mb-1">If {bet.user.name} is right:</p>
+                <p className="text-xs text-gray-700">
+                  {bet.user.name} collects ${bet.stake} from the group pool
+                </p>
+              </div>
+              <div className="bg-orange-50 p-2 rounded-md">
+                <p className="text-xs font-bold text-orange-700 mb-1">If {bet.user.name} is wrong:</p>
+                <p className="text-xs text-gray-700">
+                  Contributors get their money back and {bet.user.name} does the punishment
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
           <motion.div
             className="flex justify-between bg-gray-50 p-2 rounded-md"
             whileHover={{ backgroundColor: "#F8FAFC" }}
           >
             {[
-              { value: `$${bet.stake}`, label: "Total Stake" },
+              { value: `$${bet.stake}`, label: "Community Pool" },
               { value: `${bet.impliedOdds}%`, label: "Implied Odds" },
               {
                 value: `${(100 / bet.impliedOdds).toFixed(2)}x`,
@@ -1387,7 +1409,7 @@ function BetCard({ bet }: { bet: Bet }) {
 
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span>Stake progress: ${bet.totalRaised} of ${bet.stake}</span>
+              <span>Friend contributions: ${bet.totalRaised} of ${bet.stake}</span>
               <span className="font-medium">{bet.progress}%</span>
             </div>
             <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
@@ -1415,6 +1437,7 @@ function BetCard({ bet }: { bet: Bet }) {
                     {contributor.initials}
                   </AvatarFallback>
                 </Avatar>
+                <span className="sr-only">{contributor.name} contributed ${contributor.amount}</span>
               </motion.div>
             ))}
             <motion.div
@@ -1464,7 +1487,7 @@ function BetCard({ bet }: { bet: Bet }) {
             whileTap={{ scale: 0.95 }}
           >
             <Button className="w-full bg-blue-600 hover:bg-blue-700">
-              Join Bet (${bet.stake - bet.totalRaised} left)
+              Support Friend (${bet.stake - bet.totalRaised} more needed)
             </Button>
           </motion.div>
           <motion.div
