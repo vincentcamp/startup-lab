@@ -1284,6 +1284,9 @@ interface Bet {
 }
 
 function BetCard({ bet }: { bet: Bet }) {
+  // Extract first name for more friendly display
+  const firstName = bet.user.name.split(' ')[0];
+
   return (
     <Card className="overflow-hidden transition-all hover:shadow-md hover:border-blue-200 border-2">
       <CardHeader className="pb-2">
@@ -1344,7 +1347,6 @@ function BetCard({ bet }: { bet: Bet }) {
             </div>
           </div>
 
-          {/* New outcomes section */}
           <motion.div
             className="bg-gray-50 p-3 rounded-md border border-gray-100"
             whileHover={{ backgroundColor: "#F8FAFC" }}
@@ -1352,15 +1354,15 @@ function BetCard({ bet }: { bet: Bet }) {
             <p className="text-xs uppercase font-semibold text-gray-500 mb-2">Potential Outcomes</p>
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-blue-50 p-2 rounded-md">
-                <p className="text-xs font-bold text-blue-700 mb-1">If {bet.user.name} is right:</p>
+                <p className="text-xs font-bold text-blue-700 mb-1">If {firstName} is right:</p>
                 <p className="text-xs text-gray-700">
-                  {bet.user.name} collects ${bet.stake} from the group pool
+                  {firstName} collects ${bet.stake} from the community pool
                 </p>
               </div>
               <div className="bg-orange-50 p-2 rounded-md">
-                <p className="text-xs font-bold text-orange-700 mb-1">If {bet.user.name} is wrong:</p>
+                <p className="text-xs font-bold text-orange-700 mb-1">If {firstName} is wrong:</p>
                 <p className="text-xs text-gray-700">
-                  Contributors get their money back and {bet.user.name} does the punishment
+                  Friends get their money back and {firstName} does the punishment
                 </p>
               </div>
             </div>
@@ -1372,11 +1374,8 @@ function BetCard({ bet }: { bet: Bet }) {
           >
             {[
               { value: `$${bet.stake}`, label: "Community Pool" },
-              { value: `${bet.impliedOdds}%`, label: "Implied Odds" },
-              {
-                value: `${(100 / bet.impliedOdds).toFixed(2)}x`,
-                label: "Potential Payout",
-              },
+              { value: `${bet.contributors.length}`, label: "Friends Supporting" },
+              { value: `${bet.progress}%`, label: "Progress" },
             ].map((stat, index) => (
               <motion.div
                 key={index}
@@ -1410,7 +1409,7 @@ function BetCard({ bet }: { bet: Bet }) {
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span>Friend contributions: ${bet.totalRaised} of ${bet.stake}</span>
-              <span className="font-medium">{bet.progress}%</span>
+              <span className="font-medium">${bet.stake - bet.totalRaised} more needed</span>
             </div>
             <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
               <motion.div
@@ -1487,7 +1486,7 @@ function BetCard({ bet }: { bet: Bet }) {
             whileTap={{ scale: 0.95 }}
           >
             <Button className="w-full bg-blue-600 hover:bg-blue-700">
-              Support Friend (${bet.stake - bet.totalRaised} more needed)
+              Support {firstName} (${bet.stake - bet.totalRaised} more needed)
             </Button>
           </motion.div>
           <motion.div
