@@ -780,7 +780,7 @@ export default function HomePage() {
                                 htmlFor="stake"
                               className="text-sm font-medium"
                             >
-                                Required Stake ($)
+                                Minimum Payout ($)
                             </label>
                             <Input
                                 id="stake" 
