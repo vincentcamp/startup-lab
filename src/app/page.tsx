@@ -119,8 +119,8 @@ const floatVariants = {
 // New animation variants for wheel
 const spinVariants = {
   initial: { rotate: 0 },
-  spinning: { 
-    rotate: 1800,
+  spinning: (endDegree: number) => ({ 
+    rotate: endDegree,
     transition: { 
       duration: 5,
       ease: [0.1, 0.9, 0.2, 1.0], // More dramatic easing
@@ -128,7 +128,7 @@ const spinVariants = {
       stiffness: 20,
       damping: 15
     }
-  }
+  })
 }
 
 // New animation variants for celebration effect
@@ -154,6 +154,13 @@ const wheelPunishments = [
   { text: "Personal Chef for a Day", color: "#EC4899" }, // pink
   { text: "Run in Silly Costume", color: "#0EA5E9" }, // sky
   { text: "Dye Hair Team Colors", color: "#F97316" } // orange
+]
+
+// Our three tier punishments for testing (tier 1=mild, tier 2=medium, tier 3=difficult)
+const tierPunishments = [
+  { text: "Rival Jersey Day", color: "#F59E0B" }, // Tier 1 - mild
+  { text: "Hot Ones Challenge", color: "#EF4444" }, // Tier 2 - medium
+  { text: "Dye Hair Team Colors", color: "#F97316" } // Tier 3 - difficult
 ]
 
 // Example data
@@ -268,6 +275,7 @@ export default function HomePage() {
   const [isWheelSpun, setIsWheelSpun] = useState(false)
   const [isWheelSpinning, setIsWheelSpinning] = useState(false)
   const [selectedPunishment, setSelectedPunishment] = useState("")
+  const [wheelEndRotation, setWheelEndRotation] = useState(0)
   
   // Function to spin the wheel and select a punishment
   const spinWheel = () => {
@@ -284,9 +292,30 @@ export default function HomePage() {
       console.log('Audio not supported:', error);
     }
     
-    // Always land on the first punishment for testing
+    // Randomly select one of the 3 tier punishments
+    const randomIndex = Math.floor(Math.random() * 3);
+    const selectedPunishmentObj = tierPunishments[randomIndex];
+    
+    // Calculate wheel rotation to land on the selected punishment
+    // First, find the index of the selected punishment in the wheelPunishments array
+    let punishmentIndex = 0;
+    for (let i = 0; i < wheelPunishments.length; i++) {
+      if (wheelPunishments[i].text === selectedPunishmentObj.text) {
+        punishmentIndex = i;
+        break;
+      }
+    }
+    
+    // Each segment is 45 degrees (360 / 8 punishments)
+    // Calculate endpoint to center of the selected segment + add multiple full rotations
+    const baseRotation = (punishmentIndex * 45) + 22.5; // Center of the segment
+    const endRotation = 1800 - baseRotation; // Subtract from 1800 (5 full rotations) to land on the correct segment
+    
+    // Set the target rotation
+    setWheelEndRotation(endRotation);
+    
     setTimeout(() => {
-      setSelectedPunishment(wheelPunishments[0].text);
+      setSelectedPunishment(selectedPunishmentObj.text);
       setIsWheelSpun(true);
       setIsWheelSpinning(false);
       
@@ -648,6 +677,7 @@ export default function HomePage() {
                                   variants={spinVariants}
                                   initial="initial"
                                   animate={isWheelSpinning ? "spinning" : "initial"}
+                                  custom={wheelEndRotation}
                                   style={{
                                     background: 'conic-gradient(from 0deg, #EF4444 0deg, #3B82F6 45deg, #F59E0B 90deg, #10B981 135deg, #8B5CF6 180deg, #EC4899 225deg, #0EA5E9 270deg, #F97316 315deg, #EF4444 360deg)',
                                   }}
