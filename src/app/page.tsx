@@ -276,6 +276,13 @@ export default function HomePage() {
   const [isWheelSpinning, setIsWheelSpinning] = useState(false)
   const [selectedPunishment, setSelectedPunishment] = useState("")
   const [wheelEndRotation, setWheelEndRotation] = useState(0)
+  const [predictionCount, setPredictionCount] = useState(0)
+  const [predictionText, setPredictionText] = useState("")
+  const [selectedSport, setSelectedSport] = useState("nba")
+  const [minimumStake, setMinimumStake] = useState("")
+  const [deadline, setDeadline] = useState("")
+  const [shareWith, setShareWith] = useState("public")
+  const [betsData, setBetsData] = useState(bets)
   
   // Function to spin the wheel and select a punishment
   const spinWheel = () => {
@@ -292,9 +299,10 @@ export default function HomePage() {
       console.log('Audio not supported:', error);
     }
     
-    // Randomly select one of the 3 tier punishments
-    const randomIndex = Math.floor(Math.random() * 3);
-    const selectedPunishmentObj = tierPunishments[randomIndex];
+    // Select punishment based on prediction count (sequential)
+    // 0 = first time (Rival Jersey), 1 = second time (Hot Ones), 2+ = third time (Dye Hair)
+    const index = Math.min(predictionCount, 2);
+    const selectedPunishmentObj = tierPunishments[index];
     
     // Calculate wheel rotation to land on the selected punishment
     // First, find the index of the selected punishment in the wheelPunishments array
@@ -337,7 +345,45 @@ export default function HomePage() {
       setIsWheelSpun(false);
       setIsWheelSpinning(false);
       setSelectedPunishment("");
+      setPredictionText("");
+      setMinimumStake("");
+      setDeadline("");
     }
+  }
+  
+  // Function to handle prediction submission
+  const handleCreatePrediction = () => {
+    // Create a new prediction
+    const newPrediction = {
+      id: `${betsData.length + 1}`,
+      user: {
+        name: "You", // Using "You" as the name since this is the current user
+        avatar: "/avatars/user.png",
+        initials: "YO",
+      },
+      prediction: predictionText,
+      punishment: selectedPunishment,
+      stake: parseInt(minimumStake) || 25, // Default to 25 if not specified
+      deadline: deadline || "Tomorrow, 8:00 PM", // Default deadline if not specified
+      impliedOdds: Math.floor(Math.random() * 30) + 50, // Random odds between 50-80%
+      sportCategory: selectedSport.toUpperCase(),
+      contributors: [],
+      totalRaised: 0,
+      progress: 0,
+      comments: 0,
+      reactions: 0,
+    };
+    
+    // Add to beginning of bets array
+    setBetsData([newPrediction, ...betsData]);
+    
+    // Add to activity feed
+    const now = new Date();
+    const timeString = "just now";
+    
+    // Close dialog and increment prediction count
+    handleDialogChange(false);
+    setPredictionCount(predictionCount + 1);
   }
 
   return (
@@ -572,6 +618,8 @@ export default function HomePage() {
                             <select
                               id="sport"
                               className="w-full border border-gray-300 rounded-md p-2 text-sm"
+                              value={selectedSport}
+                              onChange={(e) => setSelectedSport(e.target.value)}
                             >
                               <option value="nba">NBA Basketball</option>
                               <option value="nfl">NFL Football</option>
@@ -594,6 +642,8 @@ export default function HomePage() {
                             <Input
                               id="prediction"
                               placeholder="Lakers will beat the Bulls by 10+ points"
+                              value={predictionText}
+                              onChange={(e) => setPredictionText(e.target.value)}
                             />
                           </motion.div>
                           
@@ -818,6 +868,8 @@ export default function HomePage() {
                                 placeholder="25" 
                                 disabled={!isWheelSpun}
                                 className={!isWheelSpun ? "bg-gray-100 cursor-not-allowed" : ""}
+                                value={minimumStake}
+                                onChange={(e) => setMinimumStake(e.target.value)}
                               />
                               {!isWheelSpun && (
                                 <p className="text-xs text-amber-600">Spin the wheel first</p>
@@ -835,6 +887,8 @@ export default function HomePage() {
                                 type="datetime-local" 
                                 disabled={!isWheelSpun}
                                 className={!isWheelSpun ? "bg-gray-100 cursor-not-allowed" : ""}
+                                value={deadline}
+                                onChange={(e) => setDeadline(e.target.value)}
                               />
                             </div>
                           </motion.div>
@@ -853,6 +907,8 @@ export default function HomePage() {
                               id="share-with"
                               className={`w-full border border-gray-300 rounded-md p-2 text-sm ${!isWheelSpun ? "bg-gray-100 cursor-not-allowed" : ""}`}
                               disabled={!isWheelSpun}
+                              value={shareWith}
+                              onChange={(e) => setShareWith(e.target.value)}
                             >
                               <option value="public">Anyone (Public)</option>
                               <option value="friends">Friends Only</option>
@@ -878,7 +934,8 @@ export default function HomePage() {
                           >
                             <Button 
                               className={`${isWheelSpun ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed'}`}
-                              disabled={!isWheelSpun}
+                              disabled={!isWheelSpun || !predictionText.trim()}
+                              onClick={handleCreatePrediction}
                             >
                               Post Prediction
                             </Button>
@@ -1020,7 +1077,7 @@ export default function HomePage() {
                       initial="hidden"
                       animate="show"
                     >
-                      {bets.map((bet) => (
+                      {betsData.map((bet) => (
                         <motion.div
                           key={bet.id}
                           variants={cardVariants}
