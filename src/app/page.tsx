@@ -377,10 +377,6 @@ export default function HomePage() {
     // Add to beginning of bets array
     setBetsData([newPrediction, ...betsData]);
     
-    // Add to activity feed
-    const now = new Date();
-    const timeString = "just now";
-    
     // Close dialog and increment prediction count
     handleDialogChange(false);
     setPredictionCount(predictionCount + 1);
