@@ -22,6 +22,7 @@ import {
   Heart,
   Flame,
   LucideIcon,
+  Check,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -114,6 +115,46 @@ const floatVariants = {
     },
   },
 }
+
+// New animation variants for wheel
+const spinVariants = {
+  initial: { rotate: 0 },
+  spinning: { 
+    rotate: 1800,
+    transition: { 
+      duration: 5,
+      ease: [0.1, 0.9, 0.2, 1.0], // More dramatic easing
+      type: "spring",
+      stiffness: 20,
+      damping: 15
+    }
+  }
+}
+
+// New animation variants for celebration effect
+const celebrationVariants = {
+  hidden: { opacity: 0, scale: 0 },
+  visible: { 
+    opacity: [0, 1, 0], 
+    scale: [0, 1.5, 0],
+    transition: { 
+      duration: 1.5,
+      times: [0, 0.5, 1]
+    }
+  }
+}
+
+// Example punishments for the wheel
+const wheelPunishments = [
+  { text: "Hot Ones Challenge", color: "#EF4444" }, // red
+  { text: "Bad Karaoke Night", color: "#3B82F6" }, // blue
+  { text: "Rival Jersey Day", color: "#F59E0B" }, // amber
+  { text: "Ice Bucket Challenge", color: "#10B981" }, // emerald
+  { text: "Social Media Takeover", color: "#8B5CF6" }, // violet
+  { text: "Personal Chef for a Day", color: "#EC4899" }, // pink
+  { text: "Run in Silly Costume", color: "#0EA5E9" }, // sky
+  { text: "Dye Hair Team Colors", color: "#F97316" } // orange
+]
 
 // Example data
 const bets = [
@@ -224,6 +265,51 @@ const popularGroups = [
 export default function HomePage() {
   const [isCreatingBet, setIsCreatingBet] = useState(false)
   const [selectedTab, setSelectedTab] = useState("friends")
+  const [isWheelSpun, setIsWheelSpun] = useState(false)
+  const [isWheelSpinning, setIsWheelSpinning] = useState(false)
+  const [selectedPunishment, setSelectedPunishment] = useState("")
+  
+  // Function to spin the wheel and select a punishment
+  const spinWheel = () => {
+    if (isWheelSpun || isWheelSpinning) return;
+    
+    setIsWheelSpinning(true);
+    
+    // Play spinning sound effect
+    try {
+      const audio = new Audio('/wheel-spin.mp3');
+      audio.volume = 0.5;
+      audio.play().catch(e => console.log('Audio play error:', e));
+    } catch (error) {
+      console.log('Audio not supported:', error);
+    }
+    
+    // Always land on the first punishment for testing
+    setTimeout(() => {
+      setSelectedPunishment(wheelPunishments[0].text);
+      setIsWheelSpun(true);
+      setIsWheelSpinning(false);
+      
+      // Play success sound when wheel stops
+      try {
+        const successAudio = new Audio('/wheel-stop.mp3');
+        successAudio.volume = 0.7;
+        successAudio.play().catch(e => console.log('Audio play error:', e));
+      } catch (error) {
+        console.log('Audio not supported:', error);
+      }
+    }, 5000); // 5 seconds spin time
+  }
+  
+  // Reset wheel state when dialog is closed
+  const handleDialogChange = (open: boolean) => {
+    setIsCreatingBet(open);
+    if (!open) {
+      setIsWheelSpun(false);
+      setIsWheelSpinning(false);
+      setSelectedPunishment("");
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white overflow-hidden">
@@ -397,7 +483,7 @@ export default function HomePage() {
               className="flex flex-wrap justify-center gap-4 mt-6"
               variants={itemVariants}
             >
-              <Dialog open={isCreatingBet} onOpenChange={setIsCreatingBet}>
+              <Dialog open={isCreatingBet} onOpenChange={handleDialogChange}>
                 <DialogTrigger asChild>
                   <motion.div
                     whileHover={{
@@ -425,7 +511,7 @@ export default function HomePage() {
                 </DialogTrigger>
                 <AnimatePresence>
                   {isCreatingBet && (
-                    <DialogContent className="sm:max-w-[500px]">
+                    <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -435,8 +521,7 @@ export default function HomePage() {
                         <DialogHeader>
                           <DialogTitle>Create a New Prediction</DialogTitle>
                           <DialogDescription>
-                            Set your prediction, stake amount, and punishment
-                            if you&apos;re wrong.
+                            Set your prediction, spin the wheel for a punishment, and set your stake.
                           </DialogDescription>
                         </DialogHeader>
                         <motion.div
@@ -482,62 +567,248 @@ export default function HomePage() {
                               placeholder="Lakers will beat the Bulls by 10+ points"
                             />
                           </motion.div>
+                          
+                          {/* Wheel of Punishments */}
+                          <motion.div
+                            className="space-y-2 my-4"
+                            variants={itemVariants}
+                          >
+                            <div className="text-center">
+                              <h3 className="text-lg font-semibold text-blue-600 mb-2">Wheel of Punishments</h3>
+                              <p className="text-sm text-gray-600 mb-4">
+                                Spin the wheel to select your punishment if your prediction is wrong
+                              </p>
+                              
+                              <div className="relative flex justify-center items-center mx-auto w-60 h-60 mb-6">
+                                {/* Celebration Effects - shown when wheel stops */}
+                                {isWheelSpun && (
+                                  <>
+                                    {Array.from({ length: 12 }).map((_, i) => {
+                                      const angle = (i * 30) * (Math.PI / 180);
+                                      const distance = 95;
+                                      const x = Math.cos(angle) * distance;
+                                      const y = Math.sin(angle) * distance;
+                                      
+                                      return (
+                                        <motion.div
+                                          key={i}
+                                          className="absolute rounded-full w-3 h-3 z-20"
+                                          style={{ 
+                                            left: 'calc(50% + ' + x + 'px)',
+                                            top: 'calc(50% + ' + y + 'px)',
+                                            backgroundColor: i % 3 === 0 ? '#EF4444' : i % 3 === 1 ? '#3B82F6' : '#F59E0B' 
+                                          }}
+                                          variants={celebrationVariants}
+                                          initial="hidden"
+                                          animate="visible"
+                                          transition={{
+                                            delay: i * 0.08,
+                                            repeat: 2,
+                                            repeatDelay: 0.3
+                                          }}
+                                        />
+                                      );
+                                    })}
+                                    
+                                    {/* Highlight ring around selected segment */}
+                                    <motion.div
+                                      className="absolute inset-0 rounded-full"
+                                      initial={{ opacity: 0, scale: 1.1 }}
+                                      animate={{ 
+                                        opacity: [0, 0.6, 0],
+                                        scale: [1.1, 1.15, 1.1]
+                                      }}
+                                      transition={{ 
+                                        duration: 2,
+                                        repeat: 3,
+                                        repeatDelay: 0.5
+                                      }}
+                                      style={{ 
+                                        background: 'radial-gradient(circle, rgba(239,68,68,0.2) 0%, rgba(255,255,255,0) 70%)'
+                                      }}
+                                    />
+                                  </>
+                                )}
+                                
+                                {/* Wheel Marker/Pointer */}
+                                <motion.div 
+                                  className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"
+                                  animate={{ y: isWheelSpinning ? [-3, -8, -3] : -3 }}
+                                  transition={{ repeat: Infinity, duration: 0.3 }}
+                                >
+                                  <div className="w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[16px] border-t-red-600 drop-shadow-md"></div>
+                                </motion.div>
+                                
+                                {/* Wheel Background (stationary) */}
+                                <div className="absolute inset-0 rounded-full bg-gray-200 shadow-inner"></div>
+                                
+                                {/* Spinning Wheel */}
+                                <motion.div
+                                  className="relative w-48 h-48 rounded-full overflow-hidden shadow-[0_0_15px_rgba(0,0,0,0.3)]"
+                                  variants={spinVariants}
+                                  initial="initial"
+                                  animate={isWheelSpinning ? "spinning" : "initial"}
+                                  style={{
+                                    background: 'conic-gradient(from 0deg, #EF4444 0deg, #3B82F6 45deg, #F59E0B 90deg, #10B981 135deg, #8B5CF6 180deg, #EC4899 225deg, #0EA5E9 270deg, #F97316 315deg, #EF4444 360deg)',
+                                  }}
+                                >
+                                  {/* Wheel divider lines */}
+                                  {wheelPunishments.map((_, index) => {
+                                    const angle = index * 45;
+                                    return (
+                                      <div 
+                                        key={`line-${index}`}
+                                        className="absolute top-0 left-0 w-full h-full"
+                                        style={{ 
+                                          transform: `rotate(${angle}deg)`,
+                                          transformOrigin: 'center'
+                                        }}
+                                      >
+                                        <div className="absolute top-1/2 left-0 w-1/2 h-[2px] bg-white"></div>
+                                      </div>
+                                    );
+                                  })}
+                                  
+                                  {/* Wheel labels */}
+                                  <div className="absolute inset-0">
+                                    {wheelPunishments.map((punishment, index) => {
+                                      // Calculate position for each label in the wheel
+                                      const angle = (index * 45) + 22.5; // Center of segment
+                                      const radian = (angle - 90) * Math.PI / 180;
+                                      const radius = 28; // % from center - reduced to avoid overlap
+                                      
+                                      // Calculate x,y position using trigonometry
+                                      const x = 50 + radius * Math.cos(radian);
+                                      const y = 50 + radius * Math.sin(radian);
+                                      
+                                      return (
+                                        <div 
+                                          key={`label-${index}`}
+                                          className="absolute px-1 py-0.5 rounded"
+                                          style={{
+                                            top: `${y}%`,
+                                            left: `${x}%`,
+                                            transform: 'translate(-50%, -50%) rotate(' + angle + 'deg)',
+                                            fontSize: '6px',
+                                            fontWeight: 'bold',
+                                            color: 'white',
+                                            background: punishment.color,
+                                            border: '0.5px solid rgba(255,255,255,0.7)',
+                                            boxShadow: '0 1px 2px rgba(0,0,0,0.25)',
+                                            maxWidth: '36px',
+                                            textAlign: 'center',
+                                            zIndex: 5,
+                                            opacity: 0.95
+                                          }}
+                                        >
+                                          {punishment.text}
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                  
+                                  {/* Wheel Border */}
+                                  <div className="absolute inset-0 rounded-full border-[3px] border-white/30"></div>
+                                </motion.div>
+                                
+                                {/* Center Circle */}
+                                <div className="absolute left-1/2 top-1/2 w-14 h-14 -ml-7 -mt-7 rounded-full bg-white flex justify-center items-center shadow-[inset_0_0_10px_rgba(0,0,0,0.2)]">
+                                  <motion.div
+                                    whileHover={!isWheelSpun && !isWheelSpinning ? { scale: 1.1, boxShadow: '0 0 10px rgba(59, 130, 246, 0.5)' } : {}}
+                                    whileTap={!isWheelSpun && !isWheelSpinning ? { scale: 0.95 } : {}}
+                                    animate={!isWheelSpun && !isWheelSpinning ? { scale: [1, 1.05, 1] } : {}}
+                                    transition={{ repeat: Infinity, duration: 1.5 }}
+                                    className={`rounded-full p-2 ${isWheelSpun ? 'bg-gray-300 cursor-not-allowed' : isWheelSpinning ? 'bg-gray-400 cursor-wait' : 'bg-blue-600 hover:bg-blue-700 cursor-pointer shadow-md'}`}
+                                    onClick={spinWheel}
+                                  >
+                                    {isWheelSpun ? (
+                                      <Check className="h-4 w-4 text-white" />
+                                    ) : (
+                                      <div className="text-white text-xs font-bold">SPIN</div>
+                                    )}
+                                  </motion.div>
+                                </div>
+                                
+                                {/* Visual Effects for Spinning State */}
+                                {isWheelSpinning && (
+                                  <motion.div 
+                                    className="absolute inset-0 rounded-full bg-white/5 backdrop-blur-sm"
+                                    animate={{ opacity: [0, 0.2, 0] }}
+                                    transition={{ repeat: Infinity, duration: 0.5 }}
+                                  />
+                                )}
+                              </div>
+                              
+                              {/* Selected Punishment Display */}
+                              {selectedPunishment ? (
+                                <motion.div
+                                  initial={{ opacity: 0, y: 10 }}
+                                  animate={{ opacity: 1, y: 0, scale: [1, 1.1, 1] }}
+                                  transition={{ duration: 0.5 }}
+                                  className="text-center p-4 bg-red-50 border-2 border-red-200 rounded-lg shadow-md max-w-md mx-auto"
+                                >
+                                  <p className="text-sm font-semibold text-red-600 mb-1">Your Punishment If Wrong:</p>
+                                  <p className="text-lg font-bold text-red-700">{selectedPunishment}</p>
+                                  <p className="text-xs text-gray-600 mt-2">Are you ready to accept this challenge?</p>
+                          </motion.div>
+                              ) : isWheelSpinning ? (
+                          <motion.div
+                                  initial={{ opacity: 0 }}
+                                  animate={{ opacity: 1 }}
+                                  className="text-center p-3 bg-blue-50 border border-blue-200 rounded-lg shadow-md max-w-md mx-auto"
+                                >
+                                  <p className="text-sm text-blue-600">Spinning the wheel of fate...</p>
+                                </motion.div>
+                              ) : (
+                                <motion.div
+                                  initial={{ opacity: 0 }}
+                                  animate={{ opacity: 1 }}
+                                  className="text-center p-3 bg-gray-50 border border-gray-200 rounded-lg max-w-md mx-auto"
+                                >
+                                  <p className="text-sm text-gray-600">Spin the wheel to determine your punishment</p>
+                                </motion.div>
+                              )}
+                            </div>
+                          </motion.div>
+                          
                           <motion.div
                             className="grid grid-cols-2 gap-4"
                             variants={itemVariants}
                           >
                             <div className="space-y-2">
-                              <label
-                                htmlFor="stake"
-                                className="text-sm font-medium"
-                              >
-                                Required Stake ($)
-                              </label>
-                              <Input id="stake" type="number" placeholder="25" />
-                            </div>
-                            <div className="space-y-2">
-                              <label
-                                htmlFor="confidence"
-                                className="text-sm font-medium"
-                              >
-                                Your Confidence (%)
-                              </label>
-                              <Input
-                                id="confidence"
-                                type="number"
-                                placeholder="75"
-                                min="1"
-                                max="99"
-                              />
-                            </div>
-                          </motion.div>
-                          <motion.div
-                            className="space-y-2"
-                            variants={itemVariants}
-                          >
                             <label
-                              htmlFor="punishment"
+                                htmlFor="stake"
                               className="text-sm font-medium"
                             >
-                              Punishment if Wrong
+                                Required Stake ($)
                             </label>
                             <Input
-                              id="punishment"
-                              placeholder="Eat a spoonful of hot sauce on video"
-                            />
-                          </motion.div>
-                          <motion.div
-                            className="space-y-2"
-                            variants={itemVariants}
-                          >
+                                id="stake" 
+                                type="number" 
+                                placeholder="25" 
+                                disabled={!isWheelSpun}
+                                className={!isWheelSpun ? "bg-gray-100 cursor-not-allowed" : ""}
+                              />
+                              {!isWheelSpun && (
+                                <p className="text-xs text-amber-600">Spin the wheel first</p>
+                              )}
+                            </div>
+                            <div className="space-y-2">
                             <label
                               htmlFor="deadline"
                               className="text-sm font-medium"
                             >
                               Betting Deadline
                             </label>
-                            <Input id="deadline" type="datetime-local" />
+                              <Input 
+                                id="deadline" 
+                                type="datetime-local" 
+                                disabled={!isWheelSpun}
+                                className={!isWheelSpun ? "bg-gray-100 cursor-not-allowed" : ""}
+                              />
+                            </div>
                           </motion.div>
+                          
                           <motion.div
                             className="space-y-2"
                             variants={itemVariants}
@@ -550,7 +821,8 @@ export default function HomePage() {
                             </label>
                             <select
                               id="share-with"
-                              className="w-full border border-gray-300 rounded-md p-2 text-sm"
+                              className={`w-full border border-gray-300 rounded-md p-2 text-sm ${!isWheelSpun ? "bg-gray-100 cursor-not-allowed" : ""}`}
+                              disabled={!isWheelSpun}
                             >
                               <option value="public">Anyone (Public)</option>
                               <option value="friends">Friends Only</option>
@@ -565,16 +837,19 @@ export default function HomePage() {
                           >
                             <Button
                               variant="outline"
-                              onClick={() => setIsCreatingBet(false)}
+                              onClick={() => handleDialogChange(false)}
                             >
                               Cancel
                             </Button>
                           </motion.div>
                           <motion.div
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
+                            whileHover={isWheelSpun ? { scale: 1.05 } : {}}
+                            whileTap={isWheelSpun ? { scale: 0.95 } : {}}
                           >
-                            <Button className="bg-blue-600 hover:bg-blue-700">
+                            <Button 
+                              className={`${isWheelSpun ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed'}`}
+                              disabled={!isWheelSpun}
+                            >
                               Post Prediction
                             </Button>
                           </motion.div>
