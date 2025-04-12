@@ -401,7 +401,7 @@ const browseBets = [
     punishmentTiers: [
       { minAmount: 20, name: "Mild", punishment: "Wear LeBron jersey during pre-game warmups", color: "#3B82F6" },
       { minAmount: 50, name: "Medium", punishment: "Use granny-style free throws for entire game", color: "#F59E0B" },
-      { minAmount: 100, name: "Severe", punishment: "Play game with oven mitts taped on hands while wearing inflatable sumo costume", color: "#EF4444" }
+      { minAmount: 100, name: "Severe", punishment: "Run 10 miles in Bobst Library", color: "#EF4444" }
     ],
     currentTier: 1,
     stake: 20,
