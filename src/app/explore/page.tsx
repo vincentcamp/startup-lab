@@ -263,8 +263,8 @@ const browseBets = [
       { name: "Jesse", initials: "JF", amount: 33 },
       { name: "Quinn", initials: "QP", amount: 15 },
     ],
-    totalRaised: 70,
-    progress: 70,
+    totalRaised: 0,
+    progress: 0,
     comments: 22,
     reactions: 37,
     timePosted: "3 days ago"

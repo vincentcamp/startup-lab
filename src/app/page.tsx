@@ -148,7 +148,7 @@ const celebrationVariants = {
 const wheelPunishments = [
   { text: "Hot Ones Challenge", color: "#EF4444" }, // red
   { text: "Bad Karaoke Night", color: "#3B82F6" }, // blue
-  { text: "Rival Jersey Day", color: "#F59E0B" }, // amber
+  { text: "Friends pick outfit for a day", color: "#F59E0B" }, // amber
   { text: "Ice Bucket Challenge", color: "#10B981" }, // emerald
   { text: "Social Media Takeover", color: "#8B5CF6" }, // violet
   { text: "Personal Chef for a Day", color: "#EC4899" }, // pink
@@ -158,7 +158,7 @@ const wheelPunishments = [
 
 // Our three tier punishments for testing (tier 1=mild, tier 2=medium, tier 3=difficult)
 const tierPunishments = [
-  { text: "Rival Jersey Day", color: "#F59E0B" }, // Tier 1 - mild
+  { text: "Friends pick outfit for a day", color: "#F59E0B" }, // Tier 1 - mild
   { text: "Hot Ones Challenge", color: "#EF4444" }, // Tier 2 - medium
   { text: "Dye Hair Team Colors", color: "#F97316" } // Tier 3 - difficult
 ]
@@ -300,7 +300,7 @@ export default function HomePage() {
     }
     
     // Select punishment based on prediction count (sequential)
-    // 0 = first time (Rival Jersey), 1 = second time (Hot Ones), 2+ = third time (Dye Hair)
+    // 0 = first time (Friends pick outfit), 1 = second time (Hot Ones), 2+ = third time (Dye Hair)
     const index = Math.min(predictionCount, 2);
     const selectedPunishmentObj = tierPunishments[index];
     
@@ -1204,8 +1204,8 @@ export default function HomePage() {
                   whileHover={{ y: -5, scale: 1.02 }}
                 >
                   <PunishmentCard
-                    title="Rival Jersey Day"
-                    description="Wear your most hated team's jersey all day in public"
+                    title="Friends pick outfit for a day"
+                    description="Let your friends choose your entire outfit for a full day"
                     usageCount={35}
                   />
                 </motion.div>

@@ -86,8 +86,8 @@ const popularPunishments = [
     difficulty: "Medium"
   },
   { 
-    title: "Rival Jersey Day", 
-    description: "Wear your most hated team&#39;s jersey all day in public",
+    title: "Friends pick outfit for a day", 
+    description: "Let your friends choose your entire outfit for a full day",
     difficulty: "Easy"
   },
   { 
