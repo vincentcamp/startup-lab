@@ -5,7 +5,7 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { 
   Search, Filter, ArrowUpDown, TrendingUp, Clock, Hash, Calendar,
-  ChevronDown, Star, X, BarChart, ArrowLeft, Check
+  ChevronDown, Star, X, BarChart, ArrowLeft, Check, AlertCircle
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -1639,7 +1639,14 @@ function BetCard({ bet }: { bet: Bet }) {
               <div className="flex justify-between items-start relative">
                 <div className="flex-1">
                   <p className="text-xs font-semibold mb-1 uppercase tracking-wider">Current Punishment:</p>
-                  <p className="text-sm font-medium">{bet.punishmentTiers[localCurrentTier].punishment}</p>
+                  {localTotalRaised === 0 ? (
+                    <p className="text-sm font-medium flex items-center">
+                      <AlertCircle className="h-4 w-4 mr-1" /> 
+                      No punishment triggered yet - minimum not reached
+                    </p>
+                  ) : (
+                    <p className="text-sm font-medium">{bet.punishmentTiers[localCurrentTier].punishment}</p>
+                  )}
                 </div>
                 
                 <motion.div
@@ -1647,7 +1654,7 @@ function BetCard({ bet }: { bet: Bet }) {
                   transition={{ repeat: Infinity, duration: 2 }}
                 >
                   <Badge className="bg-white/90 text-gray-800 font-bold shadow-md">
-                    {bet.punishmentTiers[localCurrentTier].name}
+                    {localTotalRaised === 0 ? "Not Started" : bet.punishmentTiers[localCurrentTier].name}
                   </Badge>
                 </motion.div>
               </div>
