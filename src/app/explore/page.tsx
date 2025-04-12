@@ -252,7 +252,7 @@ const browseBets = [
       { minAmount: 50, name: "Medium", punishment: "Record parody song 'Red Sox Are My Lover'", color: "#F59E0B" },
       { minAmount: 100, name: "Severe", punishment: "Get reverse mohawk haircut dyed in Red Sox colors for team's next playoff series", color: "#EF4444" }
     ],
-    currentTier: 1,
+    currentTier: 0,
     stake: 20,
     deadline: "End of season",
     impliedOdds: 40,
