@@ -397,11 +397,11 @@ const browseBets = [
       avatar: "/avatars/steve.png",
       initials: "SC",
     },
-    prediction: "Stephen Curry will break his own single-game three-point record",
+    prediction: "Bulls will beat the Heat in the play in tonight",
     punishmentTiers: [
       { minAmount: 20, name: "Mild", punishment: "Wear LeBron jersey during pre-game warmups", color: "#3B82F6" },
       { minAmount: 50, name: "Medium", punishment: "Use granny-style free throws for entire game", color: "#F59E0B" },
-      { minAmount: 100, name: "Severe", punishment: "Run 10 miles in Bobst Library", color: "#EF4444" }
+      { minAmount: 100, name: "Severe", punishment: "Run 10 km in Bobst Library", color: "#EF4444" }
     ],
     currentTier: 1,
     stake: 20,
@@ -414,7 +414,7 @@ const browseBets = [
       { name: "Draymond", initials: "DG", amount: 25 },
       { name: "Kerr", initials: "SK", amount: 20 },
     ],
-    totalRaised: 75,
+    totalRaised: 155,
     progress: 75,
     comments: 29,
     reactions: 67,
