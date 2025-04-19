@@ -1,7 +1,11 @@
+"use client"
+
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { ThemeProvider } from "@/components/ui/theme-provider"
+import { useEffect } from 'react'
+import Clarity from '@microsoft/clarity'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -15,6 +19,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  useEffect(() => {
+    Clarity.init("r6bo2k7cq8");
+  }, []);
+
   return (
     <html lang="en">
       <body className={inter.className}>
